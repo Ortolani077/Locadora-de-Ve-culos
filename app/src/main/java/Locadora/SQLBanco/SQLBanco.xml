@@ -1,0 +1,143 @@
+-- public.estado definition
+CREATE TABLE public.estado (
+    id int4 NOT NULL,
+    nome varchar(100) NOT NULL,
+    sigla varchar(2) NOT NULL,
+    CONSTRAINT estado_nome_key UNIQUE (nome),
+    CONSTRAINT estado_pkey PRIMARY KEY (id),
+    CONSTRAINT estado_sigla_key UNIQUE (sigla)
+);
+
+-- public.municipio definition
+CREATE TABLE public.municipio (
+    id serial4 NOT NULL,
+    nome varchar(100) NOT NULL,
+    estado_id int4 NOT NULL,
+    CONSTRAINT municipio_pkey PRIMARY KEY (id),
+    CONSTRAINT municipio_estado_id_fkey FOREIGN KEY (estado_id) REFERENCES public.estado(id)
+);
+
+-- public.fabricante definition
+CREATE TABLE public.fabricante (
+    id serial4 NOT NULL,
+    nome varchar(100) NOT NULL,
+    CONSTRAINT fabricante_pkey PRIMARY KEY (id)
+);
+
+-- public.modelo definition
+CREATE TABLE public.modelo (
+    id serial4 NOT NULL,
+    nome varchar(100) NOT NULL,
+    fabricante_id int4 NOT NULL,
+    CONSTRAINT modelo_pkey PRIMARY KEY (id),
+    CONSTRAINT modelo_fabricante_id_fkey FOREIGN KEY (fabricante_id) REFERENCES public.fabricante(id)
+);
+
+-- public.seguradora definition
+CREATE TABLE public.seguradora (
+    id serial4 NOT NULL,
+    nome varchar(100) NOT NULL,
+    cnpj numeric(14) NOT NULL,
+    email varchar(100) NOT NULL,
+    valor numeric(13, 2) NOT NULL,
+    municipio_id int4 NOT NULL,
+    estado_id int4 NOT NULL,
+    CONSTRAINT seguradora_cnpj_key UNIQUE (cnpj),
+    CONSTRAINT seguradora_pkey PRIMARY KEY (id),
+    CONSTRAINT seguradora_estado_id_fkey FOREIGN KEY (estado_id) REFERENCES public.estado(id),
+    CONSTRAINT seguradora_municipio_id_fkey FOREIGN KEY (municipio_id) REFERENCES public.municipio(id)
+);
+
+-- public.cliente definition
+CREATE TABLE public.cliente (
+    id serial4 NOT NULL,
+    nome varchar(100) NOT NULL,
+    rg varchar(9) NOT NULL,
+    cpf varchar(11) NOT NULL,
+    cnh varchar(11) NOT NULL,
+    cnh_vencimento date NOT NULL,
+    email varchar(100) NOT NULL,
+    logradouro varchar(150) NOT NULL,
+    municipio_id int4 NOT NULL,
+    estado_id int4 NOT NULL,
+    CONSTRAINT cliente_cpf_key UNIQUE (cpf),
+    CONSTRAINT cliente_pkey PRIMARY KEY (id),
+    CONSTRAINT cliente_estado_id_fkey FOREIGN KEY (estado_id) REFERENCES public.estado(id),
+    CONSTRAINT cliente_municipio_id_fkey FOREIGN KEY (municipio_id) REFERENCES public.municipio(id)
+);
+
+-- public.funcionario definition
+CREATE TABLE public.funcionario (
+    matricula int4 NOT NULL,
+    nome_funcionario varchar(80) NOT NULL,
+    codcargo bpchar(2) NULL,
+    CONSTRAINT pk_funcionario PRIMARY KEY (matricula)
+);
+
+-- public.carro definition
+CREATE TABLE public.carro (
+    id serial4 NOT NULL,
+    fabricante_id int4 NOT NULL,
+    modelo_id int4 NOT NULL,
+    ano numeric(4) NOT NULL,
+    cor varchar(50) NOT NULL,
+    placa varchar(7) NOT NULL,
+    valorlocacao numeric(12, 2) NOT NULL,
+    disponivel bool NOT NULL,
+    CONSTRAINT carro_pkey PRIMARY KEY (id),
+    CONSTRAINT carro_fabricante_id_fkey FOREIGN KEY (fabricante_id) REFERENCES public.fabricante(id),
+    CONSTRAINT carro_modelo_id_fkey FOREIGN KEY (modelo_id) REFERENCES public.modelo(id)
+);
+
+-- public.locacao definition
+CREATE TABLE public.locacao (
+    id serial4 NOT NULL,
+    seguradora_id int4 NOT NULL,
+    carro_id int4 NOT NULL,
+    cliente_id int4 NOT NULL,
+    datalocacao date NOT NULL,
+    datadevolucao date NOT NULL,
+    datadevolvida date NOT NULL,
+    valordesconto numeric(12, 2) NOT NULL,
+    valor numeric(12, 2) NOT NULL,
+    valortotal numeric(12, 2) NOT NULL,
+    CONSTRAINT locacao_pkey PRIMARY KEY (id),
+    CONSTRAINT locacao_carro_id_fkey FOREIGN KEY (carro_id) REFERENCES public.carro(id),
+    CONSTRAINT locacao_cliente_id_fkey FOREIGN KEY (cliente_id) REFERENCES public.cliente(id),
+    CONSTRAINT locacao_seguradora_id_fkey FOREIGN KEY (seguradora_id) REFERENCES public.seguradora(id)
+);
+
+-- public.clientetelefone definition
+CREATE TABLE public.clientetelefone (
+    id serial4 NOT NULL,
+    id_empregado int4 NOT NULL,
+    telefone numeric(11) NOT NULL,
+    CONSTRAINT clientetelefone_pkey PRIMARY KEY (id),
+    CONSTRAINT clientetelefone_telefone_key UNIQUE (telefone),
+    CONSTRAINT clientetelefone_id_empregado_fkey FOREIGN KEY (id_empregado) REFERENCES public.cliente(id)
+);
+
+-- public.seguradoratelefone definition
+CREATE TABLE public.seguradoratelefone (
+    id serial4 NOT NULL,
+    seguradora_id int4 NOT NULL,
+    telefone numeric(11) NOT NULL,
+    CONSTRAINT seguradoratelefone_pkey PRIMARY KEY (id),
+    CONSTRAINT seguradoratelefone_seguradora_id_fkey FOREIGN KEY (seguradora_id) REFERENCES public.seguradora(id)
+);
+
+-- public.fiscal definition
+CREATE TABLE public.fiscal (
+    id_nf int4 NOT NULL,
+    id_item int4 NOT NULL,
+    cod_produto int4 NOT NULL,
+    valor_unitario float8 NULL,
+    quantidade int4 NULL,
+    desconto float8 NULL
+);
+
+
+
+
+
+

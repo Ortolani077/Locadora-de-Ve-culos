@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:30.1.1-jre'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    implementation 'org.postgresql:postgresql:42.2.15'
+}
+
+application {
+    mainClass = 'Locadora.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
