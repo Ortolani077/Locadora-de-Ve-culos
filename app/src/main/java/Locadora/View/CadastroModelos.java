@@ -71,7 +71,6 @@ private void adicionarNomesFabricantes() {
         }
     }
 });
-
     // Define a cor do texto na lista gráfica (opcional)
     jListFABRICANTES.setForeground(Color.BLACK);
 }
@@ -216,13 +215,11 @@ private void adicionarNomesFabricantes() {
 
     private void BTNCADASTRARMODELOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNCADASTRARMODELOActionPerformed
         
-    String nomeModelo = digiteModelo.getText();
+String nomeModelo = digiteModelo.getText();
     if (!nomeModelo.isEmpty()) {
         if (idFabricanteSelecionado != 0) {
-            // Convertendo idFabricanteSelecionado para Long
-            Long idFabricanteLong = Long.valueOf(idFabricanteSelecionado);
             // Crie um objeto Modelo com o nome do modelo e o ID do fabricante selecionado
-            Modelo modelo = new Modelo(Long.MIN_VALUE, nomeModelo, idFabricanteLong);
+          Modelo modelo = new Modelo(Long.MIN_VALUE, nomeModelo, Long.MAX_VALUE);
 
             // Chame o método salvar da classe ModeloRepository, passando o novo modelo como argumento
             ModeloRepository modeloRepo = new ModeloRepository();

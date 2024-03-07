@@ -43,7 +43,6 @@ public class Menu extends javax.swing.JFrame {
         BtnCadastroFabricantes = new javax.swing.JButton();
         BTNCadastroModelos = new javax.swing.JButton();
         BTNPAGECADASTARCARROS = new javax.swing.JButton();
-        jButtonEDITAR = new javax.swing.JButton();
 
         jRadioButtonMenuItem1.setSelected(true);
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
@@ -73,13 +72,6 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        jButtonEDITAR.setText("Editar Veículos");
-        jButtonEDITAR.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEDITARActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -89,8 +81,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BtnCadastroFabricantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(BTNCadastroModelos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BTNPAGECADASTARCARROS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonEDITAR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BTNPAGECADASTARCARROS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(233, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -98,13 +89,11 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addComponent(BtnCadastroFabricantes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(BTNCadastroModelos)
                 .addGap(18, 18, 18)
-                .addComponent(BTNPAGECADASTARCARROS)
+                .addComponent(BTNCadastroModelos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonEDITAR)
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addComponent(BTNPAGECADASTARCARROS)
+                .addContainerGap(173, Short.MAX_VALUE))
         );
 
         pack();
@@ -168,19 +157,12 @@ public class Menu extends javax.swing.JFrame {
         
     }//GEN-LAST:event_BTNPAGECADASTARCARROSActionPerformed
 
-    private void jButtonEDITARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEDITARActionPerformed
-      Editar editar = new Editar();
-      editar.setVisible(true);
-      this.dispose();
-    }//GEN-LAST:event_jButtonEDITARActionPerformed
-
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTNCadastroModelos;
     private javax.swing.JButton BTNPAGECADASTARCARROS;
     private javax.swing.JButton BtnCadastroFabricantes;
-    private javax.swing.JButton jButtonEDITAR;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     // End of variables declaration//GEN-END:variables

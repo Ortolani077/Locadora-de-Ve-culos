@@ -118,39 +118,4 @@ public void salvarModelo(Modelo modelo) {
         System.out.println("Erro ao salvar o modelo: " + ex.getMessage());
     }
 }
-
-
-
-
-private String obterNomeModelo(Long modeloId) throws SQLException {
-    String nomeModelo = null;
-    Connection conexao = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-
-    try {
-        conexao = ConexaoBanco.obterConexao(); // Obtém a conexão com o banco de dados
-        String sql = "SELECT nome FROM modelo WHERE id = ?";
-        stmt = conexao.prepareStatement(sql);
-        stmt.setLong(1, modeloId);
-        rs = stmt.executeQuery();
-
-        if (rs.next()) {
-            nomeModelo = rs.getString("nome");
-        }
-    } finally {
-        if (rs != null) {
-            rs.close();
-        }
-        if (stmt != null) {
-            stmt.close();
-        }
-        if (conexao != null) {
-            conexao.close();
-        }
-    }
-
-    return nomeModelo;
-}
-
 }

@@ -46,7 +46,6 @@
                   <Component id="BtnCadastroFabricantes" max="32767" attributes="0"/>
                   <Component id="BTNCadastroModelos" max="32767" attributes="0"/>
                   <Component id="BTNPAGECADASTARCARROS" max="32767" attributes="0"/>
-                  <Component id="jButtonEDITAR" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="233" max="32767" attributes="0"/>
           </Group>
@@ -57,13 +56,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               <Component id="BtnCadastroFabricantes" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="BTNCadastroModelos" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-              <Component id="BTNPAGECADASTARCARROS" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jButtonEDITAR" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="134" max="32767" attributes="0"/>
+              <Component id="BTNPAGECADASTARCARROS" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="173" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -91,14 +88,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BTNPAGECADASTARCARROSActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="jButtonEDITAR">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Editar Ve&#xed;culos"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEDITARActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
