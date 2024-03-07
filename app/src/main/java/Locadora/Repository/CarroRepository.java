@@ -67,4 +67,118 @@ public class CarroRepository {
         return carrosDoFabricante;
     }
     }
+    
+    
+    public List<Carro> consultarTodos() throws SQLException {
+    List<Carro> carros = new ArrayList<>();
+    Connection conexao = ConexaoBanco.obterConexao();
+    String sql = "SELECT * FROM carro"; // Consulta para selecionar todos os carros
+    PreparedStatement statement = conexao.prepareStatement(sql);
+    ResultSet result = statement.executeQuery();
+
+    while (result.next()) {
+        // Obter os valores de cada coluna do resultado
+        long id = result.getLong("id");
+        long fabricanteId = result.getLong("fabricante_id");
+        long modeloId = result.getLong("modelo_id");
+        String placa = result.getString("placa");
+        String cor = result.getString("cor");
+        boolean disponivel = result.getBoolean("disponivel");
+        int ano = result.getInt("ano");
+        double valorLocacao = result.getDouble("valorlocacao");
+
+        // Criar um objeto Carro com os valores obtidos e adicioná-lo à lista
+        Carro carro = new Carro(id, fabricanteId, modeloId, placa, cor, disponivel, ano, valorLocacao);
+        carros.add(carro);
+    }
+
+    // Fechar recursos
+    result.close();
+    statement.close();
+    conexao.close();
+
+    return carros;
+}
+      
+      
+      
+      
+      
+      
+      public void editar(Carro carro) {
+        try {
+            Connection conexao = ConexaoBanco.obterConexao();
+            String sql = "UPDATE carro SET fabricante_id = ?, modelo_id = ?, placa = ?, cor = ?, disponivel = ?, ano = ?, valorlocacao = ? WHERE id = ?";
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            statement.setLong(1, carro.getFabricanteId());
+            statement.setLong(2, carro.getModeloId());
+            statement.setString(3, carro.getPlaca());
+            statement.setString(4, carro.getCor());
+            statement.setBoolean(5, carro.getDisponivel());
+            statement.setInt(6, carro.getAno());
+            statement.setDouble(7, carro.getValorLocacao());
+            statement.setLong(8, carro.getId());
+            statement.executeUpdate();
+
+            statement.close();
+            conexao.close();
+        } catch (SQLException e) {
+            System.out.println("Erro ao editar carro: " + e.getMessage());
+        }
+    }
+      
+      
+      public Long obterIdFabricantePeloNome(String nomeFabricante) {
+    String query = "SELECT id FROM fabricante WHERE nome = ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setString(1, nomeFabricante);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getLong("id");
+            }
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao obter ID do fabricante: " + ex.getMessage());
+    }
+    return null;
+}
+
+      
+      
+      
+      
+      public Long obterIdModeloPeloNome(String nomeModelo) {
+    String query = "SELECT id FROM modelo WHERE modelo  ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setString(1, nomeModelo);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getLong("id");
+            }
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao obter ID do modelo: " + ex.getMessage());
+    }
+    return null;
+}
+      
+      public Long obterIdModeloPeloId(Long idModelo) {
+    String query = "SELECT id FROM modelo WHERE id = ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setLong(1, idModelo);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getLong("id");
+            }
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao obter ID do modelo: " + ex.getMessage());
+    }
+    return null;
+}
+
+
 }

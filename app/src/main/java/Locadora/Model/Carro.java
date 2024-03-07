@@ -24,6 +24,16 @@ public class Carro {
 
     public Carro() {
     }
+public Carro(long carroId, String fabricante, String modelo, String placa, String cor, int parseInt, double parseDouble, boolean disponivel) {
+    this.id = carroId;
+    // Aqui você pode definir os valores para fabricanteId e modeloId com base nos parâmetros fabricante e modelo
+    // Este trecho deve ser ajustado para buscar os IDs apropriados do banco de dados ou de onde quer que esses valores venham
+    this.placa = placa;
+    this.cor = cor;
+    this.disponivel = disponivel;
+    this.ano = parseInt;
+    this.valorLocacao = parseDouble;
+}
 
     // Getters e Setters
     public Long getId() {
