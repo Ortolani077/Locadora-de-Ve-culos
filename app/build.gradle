@@ -11,6 +11,9 @@ dependencies {
     implementation 'com.google.guava:guava:30.1.1-jre'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     implementation 'org.postgresql:postgresql:42.2.15'
+// https://mvnrepository.com/artifact/org.jfree/jfreechart
+implementation group: 'org.jfree', name: 'jfreechart', version: '1.0.19'
+
 }
 
 application {

@@ -10,10 +10,19 @@ import Locadora.Repository.ModeloRepository;
 import Locadora.Services.FabricanteServices;
 import Locadora.Services.ModeloServices;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.ImageObserver;
 import static java.util.Collections.list;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
@@ -32,6 +41,18 @@ public class CadastroModelos extends javax.swing.JFrame {
     public CadastroModelos(List<String> nomesFabricantes) {
         initComponents();
          adicionarNomesFabricantes(); 
+             setBackgroundImage(); 
+              setLocationRelativeTo(null); // Define a posição da janela para o centro da tela
+        setResizable(false);
+    
+    // Adiciona um ComponentListener para atualizar a imagem de fundo quando o JFrame for redimensionado
+    addComponentListener(new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            setBackgroundImage();
+        }
+    });
+
     }
 private void adicionarNomesFabricantes() {
              DefaultListModel<String> model = new DefaultListModel<>();
@@ -209,6 +230,87 @@ private void adicionarNomesFabricantes() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    class ImagePanel extends JPanel {
+    private Image image;
+
+    // Construtor que recebe o caminho da imagem
+    public ImagePanel(String imagePath) {
+        image = new ImageIcon(imagePath).getImage();
+    }
+
+    // Sobrescreve o método paintComponent para desenhar a imagem no JPanel
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), (ImageObserver) this);
+    }
+
+    // Sobrescreve o método getPreferredSize para definir o tamanho preferido do JPanel
+    public Dimension getPreferredSize() {
+        return new Dimension(image.getWidth((ImageObserver) this), image.getHeight((ImageObserver) this));
+    }
+}
+
+    
+private void setBackgroundImage() {
+    // Caminho absoluto para a imagem
+    String imagePath = "C:\\Users\\Rodrigo Ortolani\\Documents\\NetBeansProjects\\Locadora-de-Ve-culos-main\\app\\src\\main\\java\\Locadora\\View\\Imagens\\modelo.jpg";
+jLabel1.setForeground(Color.WHITE);
+jLabel2.setForeground(Color.WHITE);
+jLabel3.setForeground(Color.WHITE);
+
+
+    try {
+        // Carrega a imagem
+        Image image = new ImageIcon(imagePath).getImage();
+
+        // Verifica se a imagem foi carregada corretamente
+        if (image != null) {
+            // Redimensiona a imagem para caber no JFrame
+            int contentWidth = getContentPane().getWidth();
+            int contentHeight = getContentPane().getHeight();
+            Image scaledImage = image.getScaledInstance(contentWidth, contentHeight, Image.SCALE_SMOOTH);
+
+            // Cria um ImageIcon com a imagem redimensionada
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+            // Cria um JLabel para exibir a imagem
+            JLabel backgroundLabel = new JLabel(scaledIcon);
+            backgroundLabel.setBounds(0, 0, contentWidth, contentHeight);
+
+            // Adiciona o JLabel ao content pane do JFrame
+            getContentPane().add(backgroundLabel);
+
+            // Revalida e redesenha o content pane do JFrame para garantir que as mudanças sejam aplicadas
+            revalidate();
+            repaint();
+        } else {
+            System.err.println("Erro ao carregar a imagem: " + imagePath);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println("Erro ao carregar a imagem: " + imagePath);
+    }
+}
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private void digiteModeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_digiteModeloActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_digiteModeloActionPerformed
@@ -219,7 +321,7 @@ String nomeModelo = digiteModelo.getText();
     if (!nomeModelo.isEmpty()) {
         if (idFabricanteSelecionado != 0) {
             // Crie um objeto Modelo com o nome do modelo e o ID do fabricante selecionado
-          Modelo modelo = new Modelo(Long.MIN_VALUE, nomeModelo, Long.MAX_VALUE);
+Modelo modelo = new Modelo(Long.MIN_VALUE, nomeModelo, Long.valueOf(idFabricanteSelecionado));
 
             // Chame o método salvar da classe ModeloRepository, passando o novo modelo como argumento
             ModeloRepository modeloRepo = new ModeloRepository();
@@ -231,7 +333,8 @@ String nomeModelo = digiteModelo.getText();
         }
     } else {
         JOptionPane.showMessageDialog(rootPane, "Por favor, informe o nome do modelo ");
-    }
+    
+    }//GEN-LAST:event_BTNCADASTRARMODELOActionPerformed
     }//GEN-LAST:event_BTNCADASTRARMODELOActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -256,27 +359,32 @@ String nomeModelo = digiteModelo.getText();
 
       
     
+ModeloServices modeloService = new ModeloServices();
+List<Modelo> modelos = modeloService.consultarTodosmodelos();
 
-     ModeloServices modeloService = new ModeloServices();
-    List<Modelo> modelos = modeloService.consultarTodosmodelos();
-    
-    StringBuilder mensagem = new StringBuilder();
-    mensagem.append("Lista de Modelos:\n");
-    mensagem.append("________________________________\n");
-    for (Modelo modelo : modelos) {
-        mensagem.append("ID: ").append(modelo.getId()).append(", ");
-        mensagem.append("Modelo: ").append(modelo.getNome()).append(", ");
-        mensagem.append("Fabricante: ").append(modelo.getNomeFabricante()).append("\n");
-    }
-    mensagem.append("________________________________");
+StringBuilder mensagem = new StringBuilder();
+mensagem.append("Lista de Modelos:\n");
+mensagem.append("________________________________\n");
+for (Modelo modelo : modelos) {
+    mensagem.append("ID: ").append(modelo.getId()).append(", ");
+    mensagem.append("Modelo: ").append(modelo.getNome()).append(", ");
+    mensagem.append("Fabricante: ").append(modelo.getNomeFabricante()).append("\n");
+}
+mensagem.append("________________________________");
 
-        // Criando uma JTextArea para exibir a mensagem com barra de rolagem
-        JTextArea textArea = new JTextArea(mensagem.toString());
-        textArea.setEditable(false); // Impede que o usuário edite o texto
-        JScrollPane scrollPane = new JScrollPane(textArea); // Adiciona a JTextArea a um JScrollPane
+// Criando uma JTextArea para exibir a mensagem
+JTextArea textArea = new JTextArea(mensagem.toString());
+textArea.setEditable(false); // Impede que o usuário edite o texto
 
-        // Exibe o diálogo JOptionPane com a JTextArea dentro do JScrollPane
-        JOptionPane.showMessageDialog(null, scrollPane, "Lista de Modelos", JOptionPane.INFORMATION_MESSAGE);
+// Criando um JScrollPane e adicionando a JTextArea a ele
+JScrollPane scrollPane = new JScrollPane(textArea);
+
+// Configurando a política de rolagem vertical para o JScrollPane
+scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+// Exibindo o diálogo JOptionPane com a JTextArea dentro do JScrollPane
+JOptionPane.showMessageDialog(null, scrollPane, "Lista de Modelos", JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_BTNLISTADEMODELOSActionPerformed
 
     /**
@@ -308,17 +416,18 @@ String nomeModelo = digiteModelo.getText();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                 List<String> nomesFabricantes = new FabricanteServices().obterNomesFabricantes();
-
-            // Cria uma instância de CadastroFabricantes e passa a lista de nomes de fabricantes
-            new CadastroFabricantes(nomesFabricantes).setVisible(true);
-                
-                
-                
-                
-                
-            }
+             public void run() {
+        List<String> nomesFabricantes = new FabricanteServices().obterNomesFabricantes();
+        CadastroModelos cadastroModelos = new CadastroModelos(nomesFabricantes);
+        cadastroModelos.setVisible(true);
+        
+        cadastroModelos.setLocationRelativeTo(null);
+        
+        // Impede o redimensionamento da janela
+        cadastroModelos.setResizable(false);
+        
+        cadastroModelos.setVisible(true);
+    }
         });
     }
 

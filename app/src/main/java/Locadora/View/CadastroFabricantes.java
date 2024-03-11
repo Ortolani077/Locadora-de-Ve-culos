@@ -6,8 +6,19 @@ package Locadora.View;
 
 import Locadora.Model.Fabricante;
 import Locadora.Services.FabricanteServices;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.ImageObserver;
 import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -16,12 +27,26 @@ import javax.swing.JOptionPane;
 public class CadastroFabricantes extends javax.swing.JFrame {
      private List<String> nomesFabricantes;
 
-    // Construtor que recebe a lista de nomes de fabricantes como argumento
-    public CadastroFabricantes(List<String> nomesFabricantes) {
-              this.nomesFabricantes = nomesFabricantes;
-        initComponents(); // Chama o método para inicializar os componentes da interface gráfica
-        adicionarNomesFabricantes(); // Adiciona os nomes dos fabricantes à lista gráfica
-    }
+// Construtor que recebe a lista de nomes de fabricantes como argumento
+public CadastroFabricantes(List<String> nomesFabricantes) {
+    this.nomesFabricantes = nomesFabricantes;
+    initComponents(); // Chama o método para inicializar os componentes da interface gráfica
+    adicionarNomesFabricantes(); // Adiciona os nomes dos fabricantes à lista gráfica
+    setBackgroundImage(); 
+        setLocationRelativeTo(null); // Define a posição da janela para o centro da tela
+        setResizable(false);
+    // Adiciona um ComponentListener para atualizar a imagem de fundo quando o JFrame for redimensionado
+    addComponentListener(new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            setBackgroundImage();
+        }
+    });
+
+    // Definir o layout do JFrame como null para remover as bordas superior e inferior
+    getContentPane().setLayout(null);
+}
+
 
     // Construtor vazio removido
 
@@ -82,7 +107,7 @@ public class CadastroFabricantes extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Digite o nome do Fabricante  para cadastro");
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
 
         BTNAtualizarLista.setText("Atualizar Lista");
         BTNAtualizarLista.addActionListener(new java.awt.event.ActionListener() {
@@ -105,44 +130,116 @@ public class CadastroFabricantes extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(71, 71, 71)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(79, 79, 79)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19)
-                                .addComponent(BtnVoltarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(txtDigiteNomeFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(BTNAtualizarLista))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(BtnCadastroFabricante)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                            .addComponent(BtnCadastroFabricante)
+                            .addComponent(txtDigiteNomeFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(BtnVoltarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(86, 86, 86)
+                .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(BTNAtualizarLista)
+                .addGap(0, 20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtnVoltarMenu))
+                    .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(BTNAtualizarLista)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
+                .addGap(28, 28, 28)
+                .addComponent(txtDigiteNomeFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDigiteNomeFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BTNAtualizarLista))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(BtnCadastroFabricante)
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(BtnVoltarMenu)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+    
+ 
+
+// Classe para exibir uma imagem de fundo em um JPanel
+class ImagePanel extends JPanel {
+    private Image image;
+
+    // Construtor que recebe o caminho da imagem
+    public ImagePanel(String imagePath) {
+        image = new ImageIcon(imagePath).getImage();
+    }
+
+    // Sobrescreve o método paintComponent para desenhar a imagem no JPanel
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    // Sobrescreve o método getPreferredSize para definir o tamanho preferido do JPanel
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(image.getWidth(this), image.getHeight(this));
+    }
+}
+
+    
+private void setBackgroundImage() {
+    // Caminho absoluto para a imagem
+    String imagePath = "C:\\Users\\Rodrigo Ortolani\\Documents\\NetBeansProjects\\Locadora-de-Ve-culos-main\\app\\src\\main\\java\\Locadora\\View\\Imagens\\fabricanteslogos.jpg";
+
+
+    try {
+        // Carrega a imagem
+        Image image = new ImageIcon(imagePath).getImage();
+
+        // Verifica se a imagem foi carregada corretamente
+        if (image != null) {
+            // Redimensiona a imagem para caber no JFrame
+            int contentWidth = getContentPane().getWidth();
+            int contentHeight = getContentPane().getHeight();
+            Image scaledImage = image.getScaledInstance(contentWidth, contentHeight, Image.SCALE_SMOOTH);
+
+            // Cria um ImageIcon com a imagem redimensionada
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+            // Cria um JLabel para exibir a imagem
+            JLabel backgroundLabel = new JLabel(scaledIcon);
+            backgroundLabel.setBounds(0, 0, contentWidth, contentHeight);
+
+            // Adiciona o JLabel ao content pane do JFrame
+            getContentPane().add(backgroundLabel);
+
+            // Revalida e redesenha o content pane do JFrame para garantir que as mudanças sejam aplicadas
+            revalidate();
+            repaint();
+        } else {
+            System.err.println("Erro ao carregar a imagem: " + imagePath);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.err.println("Erro ao carregar a imagem: " + imagePath);
+    }
+}
+
+
+    
     private void list1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_list1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_list1ActionPerformed
@@ -204,6 +301,30 @@ public class CadastroFabricantes extends javax.swing.JFrame {
     //</editor-fold>
 
     /* Create and display the form */
+    
+    
+    class ImagePanel extends JPanel {
+    private Image image;
+
+    // Construtor que recebe o caminho da imagem
+    public ImagePanel(String imagePath) {
+        image = new ImageIcon(imagePath).getImage();
+    }
+
+    // Sobrescreve o método paintComponent para desenhar a imagem no JPanel
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    // Sobrescreve o método getPreferredSize para definir o tamanho preferido do JPanel
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(image.getWidth((ImageObserver) this), image.getHeight((ImageObserver) this));
+    }
+}
+    
     java.awt.EventQueue.invokeLater(new Runnable() {
         public void run() {
             // Obtém a lista de nomes de fabricantes

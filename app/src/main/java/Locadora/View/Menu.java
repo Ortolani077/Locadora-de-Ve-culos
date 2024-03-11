@@ -5,14 +5,18 @@
 
 package Locadora.View;
 
+import Locadora.Model.Carro;
 import Locadora.Model.Fabricante;
 import Locadora.Model.Modelo;
+import Locadora.Repository.CarroRepository;
+import Locadora.Services.ChartFrame;
 import Locadora.Services.FabricanteServices;
 import Locadora.Services.ModeloServices;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +24,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -35,45 +42,114 @@ public class Menu extends javax.swing.JFrame {
   private List<String> nomesModelos;
     private List<String> nomesFabricantes;
 
-  public Menu() {
-    initComponents();
-    this.nomesFabricantes = new FabricanteServices().obterNomesFabricantes();
-    this.nomesModelos = new ModeloServices().obterNomesModelos();
-    setBackgroundImage(); // Chama o método para definir a imagem de fundo
-    createMenuBar();
-}
+   public Menu() {
+       initComponents();
+       setBackgroundImage(); // Configura a imagem de fundo
+       createMenuBar();
+           setLocationRelativeTo(null); // Define a posição da janela para o centro da tela
+        setResizable(false);
+      ;
+    }
+
 
    
-    private void createMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-        
-        // Menu de Cadastro
-        JMenu menuCadastro = new JMenu("Cadastro");
-        JMenuItem itemCadastroFabricantes = new JMenuItem("Fabricantes");
-        JMenuItem itemCadastroModelos = new JMenuItem("Modelos");
-        menuCadastro.add(itemCadastroFabricantes);
-        menuCadastro.add(itemCadastroModelos);
-        
-        // Menu de Operações
-        JMenu menuOperacoes = new JMenu("Operações");
-        JMenuItem itemCadastrarVeiculos = new JMenuItem("Cadastrar Veículos");
-        JMenuItem itemEditarVeiculos = new JMenuItem("Editar Veículos");
-        menuOperacoes.add(itemCadastrarVeiculos);
-        menuOperacoes.add(itemEditarVeiculos);
-        
-        // Adicionando menus à barra de menus
-        menuBar.add(menuCadastro);
-        menuBar.add(menuOperacoes);
-        
-        // Configurando a barra de menus
-        setJMenuBar(menuBar);
-        
-        
-        itemCadastroFabricantes.addActionListener(evt -> BtnCadastroFabricantesActionPerformed(evt));
-        itemCadastroModelos.addActionListener(evt -> BTNCadastroModelosActionPerformed(evt));
-        itemCadastrarVeiculos.addActionListener(evt -> BTNPAGECADASTARCARROSActionPerformed(evt));
-        itemEditarVeiculos.addActionListener(evt -> jButtonEDITARActionPerformed(evt));
+  private void createMenuBar() {
+    JMenuBar menuBar = new JMenuBar();
+
+    // Menu de Cadastro
+    JMenu menuCadastro = new JMenu("Cadastro");
+    JMenuItem itemCadastroFabricantes = new JMenuItem("Fabricantes");
+    JMenuItem itemCadastroModelos = new JMenuItem("Modelos");
+    menuCadastro.add(itemCadastroFabricantes);
+    menuCadastro.add(itemCadastroModelos);
+
+    // Menu de Operações
+    JMenu menuOperacoes = new JMenu("Operações");
+    JMenuItem itemCadastrarVeiculos = new JMenuItem("Cadastrar Veículos");
+    JMenuItem itemEditarVeiculos = new JMenuItem("Editar Veículos");
+    JMenuItem itemGerarGrafico = new JMenuItem("Gerar Gráfico");
+    menuOperacoes.add(itemCadastrarVeiculos);
+    menuOperacoes.add(itemEditarVeiculos);
+    menuOperacoes.add(itemGerarGrafico); // Adicionando o item do menu para gerar o gráfico
+
+    // Adicionando menus à barra de menus
+    menuBar.add(menuCadastro);
+    menuBar.add(menuOperacoes);
+
+    // Configurando a barra de menus
+    setJMenuBar(menuBar);
+    
+    // Adicionando ouvintes de eventos aos itens do menu
+    itemCadastroFabricantes.addActionListener(evt -> abrirTelaCadastroFabricantes());
+    itemCadastroModelos.addActionListener(evt -> abrirTelaCadastroModelos());
+    itemCadastrarVeiculos.addActionListener(evt -> abrirTelaCadastrarVeiculos());
+    itemEditarVeiculos.addActionListener(evt -> {
+        try {
+            abrirTelaEditarVeiculos();
+        } catch (SQLException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    });
+
+    // Adicionando o ouvinte de evento para o item do menu "Gerar Gráfico"
+    itemGerarGrafico.addActionListener(evt -> gerarGrafico());
+}
+
+// Método para gerar o gráfico
+private void gerarGrafico() {
+    try {
+        CarroRepository carroRepository = new CarroRepository();
+        List<Carro> carros = carroRepository.listarTodos();
+        DefaultPieDataset dataset = ChartFrame.criarDataset(carros); // Criar o conjunto de dados para o gráfico
+        ChartFrame frame = new ChartFrame(dataset); // Criar a janela do gráfico
+        frame.setVisible(true); // Exibir a janela do gráfico
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+}
+
+// Métodos para abrir as telas correspondentes aos itens do menu
+private void abrirTelaCadastroFabricantes() {
+    CadastroFabricantes fabricantes = new CadastroFabricantes(nomesFabricantes);
+    fabricantes.setVisible(true);
+    
+    this.dispose();
+    // Exemplo: CadastroFabricantes telaCadastroFabricantes = new CadastroFabricantes();
+    // telaCadastroFabricantes.setVisible(true);
+}
+
+private void abrirTelaCadastroModelos() {
+    CadastroModelos modelos = new CadastroModelos(nomesFabricantes);
+    modelos.setVisible(true);
+    
+    this.dispose();
+}
+
+private void abrirTelaCadastrarVeiculos() {
+    CadastroVeiculos veiculos = new CadastroVeiculos();
+    veiculos.setVisible(true);
+    
+    this.dispose();
+}
+
+private void abrirTelaEditarVeiculos() throws SQLException {
+    EditarCarro editar = new EditarCarro();
+    editar.setVisible(true);
+    this.dispose();
+    
+}
+
+      /** This method is called from within the constructor to
+       * initialize the form.
+       * WARNING: Do NOT modify this code. The content of this method is
+       * always regenerated by the Form Editor.
+       */
+      /** This method is called from within the constructor to
+       * initialize the form.
+       * WARNING: Do NOT modify this code. The content of this method is
+       * always regenerated by the Form Editor.
+       */        
+    
 
 
     /** This method is called from within the constructor to
@@ -87,10 +163,6 @@ public class Menu extends javax.swing.JFrame {
 
         jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        BtnCadastroFabricantes = new javax.swing.JButton();
-        BTNCadastroModelos = new javax.swing.JButton();
-        BTNPAGECADASTARCARROS = new javax.swing.JButton();
-        jButtonEDITAR = new javax.swing.JButton();
 
         jRadioButtonMenuItem1.setSelected(true);
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
@@ -99,202 +171,85 @@ public class Menu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        BtnCadastroFabricantes.setText("Cadastro de Fabricantes");
-        BtnCadastroFabricantes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnCadastroFabricantesActionPerformed(evt);
-            }
-        });
-
-        BTNCadastroModelos.setText("Cadastro de Modelos");
-        BTNCadastroModelos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BTNCadastroModelosActionPerformed(evt);
-            }
-        });
-
-        BTNPAGECADASTARCARROS.setText("Cadastrar Veículos");
-        BTNPAGECADASTARCARROS.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BTNPAGECADASTARCARROSActionPerformed(evt);
-            }
-        });
-
-        jButtonEDITAR.setText("Editar Carros");
-        jButtonEDITAR.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEDITARActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(BtnCadastroFabricantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BTNCadastroModelos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BTNPAGECADASTARCARROS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButtonEDITAR, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(233, Short.MAX_VALUE))
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(BtnCadastroFabricantes)
-                .addGap(18, 18, 18)
-                .addComponent(BTNCadastroModelos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(BTNPAGECADASTARCARROS)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonEDITAR)
-                .addContainerGap(134, Short.MAX_VALUE))
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BtnCadastroFabricantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCadastroFabricantesActionPerformed
-        
-         FabricanteServices fabricanteServices = new FabricanteServices();
-    
-    // Obter os nomes dos fabricantes
-    List<String> nomesFabricantes = fabricanteServices.obterNomesFabricantes();
-    
-    // Verificar se a lista de nomes de fabricantes não está vazia
-    if (!nomesFabricantes.isEmpty()) {
-        // Criar uma nova instância da tela de cadastro de fabricantes
-        CadastroFabricantes cadastroFabricantes = new CadastroFabricantes(nomesFabricantes);
-        
-        // Tornar a nova janela CadastroFabricantes visível
-        cadastroFabricantes.setVisible(true);
-        
-        // Fechar a janela atual (Menu)
-        this.dispose();
-    } else {
-        // Se a lista de nomes de fabricantes estiver vazia, exibir uma mensagem
-        JOptionPane.showMessageDialog(this, "Não há fabricantes disponíveis para cadastro.");
-    }
-
-        
-        
-        
-    }//GEN-LAST:event_BtnCadastroFabricantesActionPerformed
-
-    private void BTNCadastroModelosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNCadastroModelosActionPerformed
-        
-        
-        
-                                                        
-    // Obtém a lista de nomes de modelos
-    List<String> nomesModelos = new ModeloServices().obterNomesModelos();
-
-    // Cria uma nova instância da tela CadastroModelos
-    CadastroModelos cadastroModelos = new CadastroModelos(nomesModelos);
-    
-    // Torna a nova janela CadastroModelos visível
-    cadastroModelos.setVisible(true);
-    
-    // Fecha a janela atual (Menu)
-    this.dispose();
-
-
-        
-        
-        
-        
-    }//GEN-LAST:event_BTNCadastroModelosActionPerformed
-
-    private void BTNPAGECADASTARCARROSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNPAGECADASTARCARROSActionPerformed
- CadastroVeiculos cadastro = new CadastroVeiculos();
- cadastro.setVisible(true);
-        this.dispose();
-        
-    }//GEN-LAST:event_BTNPAGECADASTARCARROSActionPerformed
-
     
     
     
     
-    private void jButtonEDITARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEDITARActionPerformed
-
-  try {
-        // Cria uma instância da classe EditarCarro
-        EditarCarro editarCarroFrame = new EditarCarro();
-        
-        // Torna a janela de edição de carro visível
-        editarCarroFrame.setVisible(true);
-        
-    } catch (SQLException ex) {
-        // Captura e trata a exceção
-        ex.printStackTrace(); // ou outro tratamento adequado
-    }
-
-
-    }//GEN-LAST:event_jButtonEDITARActionPerformed
-
+    
+    
+    
+    
+    
+    
    
     
     
-   
-       private void setBackgroundImage() {
-        try {
-            // Carrega a imagem de fundo do diretório de recursos do projeto
-BufferedImage backgroundImage = ImageIO.read(new File("C:\\Users\\Rodrigo Ortolani\\Documents\\NetBeansProjects\\Locadora_Veiculos\\app\\src\\main\\java\\Locadora\\View\\locadora.png"));
-
-            // Cria um JPanel para adicionar a imagem de fundo
-            JPanel backgroundPanel = new JPanel() {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    super.paintComponent(g);
-                    // Desenha a imagem de fundo no JPanel
-                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-                }
-            };
-
-            // Define o layout do JPanel como nulo para posicionar manualmente os componentes
-            backgroundPanel.setLayout(null);
-
-            // Define o tamanho e a posição dos seus componentes de menu
-            // Exemplo: BtnCadastroFabricantes.setBounds(x, y, largura, altura);
-            // BtnCadastroFabricantes.setBounds(50, 50, 200, 30);
-            // BTNCadastroModelos.setBounds(...);
-
-            // Adiciona o JPanel como o contentPane do JFrame
-            setContentPane(backgroundPanel);
-        } catch (IOException ex) {
-            // Trata exceções se a imagem não puder ser carregada
-            ex.printStackTrace();
-        }
-    }
     
+  private void setBackgroundImage() {
+    // Caminho absoluto para a imagem
+    String imagePath = "C:\\Users\\Rodrigo Ortolani\\Documents\\NetBeansProjects\\Locadora-de-Ve-culos-main\\app\\src\\main\\java\\Locadora\\View\\Imagens\\locadora.png";
     
+    // Cria um objeto ImageIcon com a imagem
+    ImageIcon icon = new ImageIcon(imagePath);
     
-     
+    // Cria um JLabel para exibir a imagem
+    JLabel label = new JLabel(icon);
+    
+    // Define o tamanho do JLabel como o tamanho do JFrame
+    label.setBounds(0, 0, getWidth(), getHeight());
+    
+    // Adiciona o JLabel ao JFrame
+    add(label);
+}
 
 
-    
-    
-    
-    
-    
-    
-public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Menu().setVisible(true);
+    public static void main(String[] args) {
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+     * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+     */
+    try {
+        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
             }
-        });
+        }
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    //</editor-fold>
+
+    /* Create and display the form */
+    java.awt.EventQueue.invokeLater(() -> {
+        Menu menu = new Menu();
+        
+        // Define a posição da janela para o centro da tela
+        menu.setLocationRelativeTo(null);
+        
+        // Impede o redimensionamento da janela
+        menu.setResizable(false);
+        
+        menu.setVisible(true);
+    });
+}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BTNCadastroModelos;
-    private javax.swing.JButton BTNPAGECADASTARCARROS;
-    private javax.swing.JButton BtnCadastroFabricantes;
-    private javax.swing.JButton jButtonEDITAR;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     // End of variables declaration//GEN-END:variables
