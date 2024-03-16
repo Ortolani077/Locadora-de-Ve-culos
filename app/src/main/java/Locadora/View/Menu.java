@@ -53,24 +53,39 @@ public class Menu extends javax.swing.JFrame {
 
 
    
-  private void createMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
 
-    // Menu de Cadastro
-    JMenu menuCadastro = new JMenu("Cadastro");
-    JMenuItem itemCadastroFabricantes = new JMenuItem("Fabricantes");
-    JMenuItem itemCadastroModelos = new JMenuItem("Modelos");
-    menuCadastro.add(itemCadastroFabricantes);
-    menuCadastro.add(itemCadastroModelos);
 
     // Menu de Operações
     JMenu menuOperacoes = new JMenu("Operações");
+
+    private void createMenuBar() {
+    JMenuBar menuBar = new JMenuBar();
+
+    // Cria o menu "Cadastro"
+    JMenu menuCadastro = new JMenu("Cadastro");
+
+    JMenuItem itemCadastroFabricantes = new JMenuItem("Cadastrar Fabricantes");
+    JMenuItem itemCadastroModelos = new JMenuItem("Cadastrar Modelos");
     JMenuItem itemCadastrarVeiculos = new JMenuItem("Cadastrar Veículos");
+
+    // Adiciona os itens de menu ao menu "Cadastro"
+    menuCadastro.add(itemCadastroFabricantes);
+    menuCadastro.add(itemCadastroModelos);
+    menuCadastro.add(itemCadastrarVeiculos);
+
+    // Cria o menu "Operações"
+    JMenu menuOperacoes = new JMenu("Operações");
+
     JMenuItem itemEditarVeiculos = new JMenuItem("Editar Veículos");
+    JMenuItem itemEditarFabricantes = new JMenuItem("Editar Fabricantes");
+    JMenuItem itemDeletarFabricantes = new JMenuItem("Deletar Fabricantes"); // Novo item para deletar fabricantes
     JMenuItem itemGerarGrafico = new JMenuItem("Gerar Gráfico");
-    menuOperacoes.add(itemCadastrarVeiculos);
+
+    // Adiciona os itens de menu ao menu "Operações"
     menuOperacoes.add(itemEditarVeiculos);
-    menuOperacoes.add(itemGerarGrafico); // Adicionando o item do menu para gerar o gráfico
+    menuOperacoes.add(itemEditarFabricantes);
+    menuOperacoes.add(itemDeletarFabricantes); // Adiciona o item do menu para deletar fabricantes
+    menuOperacoes.add(itemGerarGrafico);
 
     // Adicionando menus à barra de menus
     menuBar.add(menuCadastro);
@@ -90,10 +105,24 @@ public class Menu extends javax.swing.JFrame {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
         }
     });
-
-    // Adicionando o ouvinte de evento para o item do menu "Gerar Gráfico"
-    itemGerarGrafico.addActionListener(evt -> gerarGrafico());
+    itemEditarFabricantes.addActionListener(evt -> abrirTelaEditarFabricantes());
+    itemDeletarFabricantes.addActionListener(evt -> abrirTelaDeletarFabricantes()); // Novo listener para deletar fabricantes
+    itemGerarGrafico.addActionListener(evt -> gerarGrafico()); // Ouvinte para o item Gerar Gráfico
 }
+    
+    private void abrirTelaDeletarFabricantes() {
+    DeletarFabricante telaDeletarFabricantes = new DeletarFabricante();
+    telaDeletarFabricantes.setVisible(true);
+}
+
+    
+private void abrirTelaEditarFabricantes() {
+    // Implemente aqui a lógica para abrir a tela de edição de fabricantes
+    EditarFabricante editarFabricante = new EditarFabricante();
+    editarFabricante.setVisible(true);
+    this.dispose(); // Fecha a janela atual
+}
+
 
 // Método para gerar o gráfico
 private void gerarGrafico() {

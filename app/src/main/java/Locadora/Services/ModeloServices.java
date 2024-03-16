@@ -230,7 +230,7 @@ private String obterNomeFabricante(long fabricanteId) {
             while (result.next()) {
                 long id = result.getLong("id");
                 String nome = result.getString("nome");
-                Fabricante fabricante = new Fabricante(id, nome); // Instancia o fabricante com os dados do banco
+                Fabricante fabricante = new Fabricante(nome); // Instancia o fabricante com os dados do banco
                 listaFabricantes.add(fabricante);
             }
 

@@ -80,4 +80,134 @@ public Long salvar(String nome) {
         }
         return id;
 }
+    
+    
+    
+      public void editarFabricante(Fabricante fabricante) {
+String updateFabricante = "UPDATE fabricante SET nome = ? WHERE nome = ?";
+
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(updateFabricante)) {
+        
+        statement.setString(1, fabricante.getNome());
+        
+
+        statement.executeUpdate();
+        System.out.println("Fabricante editado com sucesso!");
+    } catch (SQLException ex) {
+        System.out.println("Erro ao editar o fabricante: " + ex.getMessage());
+    }
+}
+      
+
+public boolean verificarModelosAssociados(long idFabricante) {
+    String query = "SELECT COUNT(*) FROM modelo WHERE fabricante_id = ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        
+        statement.setLong(1, idFabricante);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            int count = resultSet.getInt(1);
+            return count > 0; // Retorna true se houver modelos associados, false se não houver
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao verificar modelos associados: " + ex.getMessage());
+    }
+    return true; // Retorna true em caso de erro para evitar exclusão acidental
+}
+
+
+      
+public String obterNomeFabricantePorId(long idFabricante) {
+    // Cria uma instância de FabricanteRepository
+    FabricanteRepository fabricanteRepository = new FabricanteRepository();
+    
+    // Consulta o repositório para obter a lista de fabricantes
+    List<Fabricante> fabricantes = fabricanteRepository.consultar();
+    
+    // Itera sobre a lista de fabricantes
+    for (Fabricante fabricante : fabricantes) {
+        // Verifica se o ID do fabricante corresponde ao ID procurado
+        if (fabricante.getId() == idFabricante) {
+            // Retorna o nome do fabricante encontrado
+            return fabricante.getNome();
+        }
+    }
+    // Retorna uma string vazia se o fabricante não for encontrado
+    return "";
+}
+
+
+
+
+
+
+public void excluirModelosDoFabricante(long idFabricante) {
+    String deleteModelos = "DELETE FROM modelo WHERE fabricante_id = ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(deleteModelos)) {
+        
+        statement.setLong(1, idFabricante);
+        statement.executeUpdate();
+        
+        System.out.println("Modelos associados ao fabricante foram excluídos com sucesso!");
+        
+    } catch (SQLException ex) {
+        System.out.println("Erro ao excluir modelos associados: " + ex.getMessage());
+    }
+}
+
+public void deletarFabricante(Fabricante fabricante) {
+    // Verifica se há modelos associados ao fabricante
+    if (verificarModelosAssociados(fabricante.getId())) {
+        // Se houver, exclua esses modelos primeiro
+        excluirModelosDoFabricante(fabricante.getId());
+    }
+
+    // Exclui os carros associados aos modelos do fabricante
+    excluirCarrosDosModelosDoFabricante(fabricante.getId());
+
+    // Agora podemos excluir o fabricante
+    String deleteFabricante = "DELETE FROM fabricante WHERE id = ?";
+  
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(deleteFabricante)) {
+        
+        statement.setLong(1, fabricante.getId());
+        
+        int linhasAfetadas = statement.executeUpdate();
+        
+        if (linhasAfetadas > 0) {
+            System.out.println("Fabricante deletado com sucesso!");
+        } else {
+            System.out.println("Nenhum fabricante foi deletado.");
+        }
+        
+    } catch (SQLException ex) {
+        System.out.println("Erro ao deletar o fabricante: " + ex.getMessage());
+    }
+}
+
+// Método para excluir os carros associados aos modelos do fabricante
+public void excluirCarrosDosModelosDoFabricante(long idFabricante) {
+    String deleteCarros = "DELETE FROM carro WHERE modelo_id IN (SELECT id FROM modelo WHERE fabricante_id = ?)";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(deleteCarros)) {
+        
+        statement.setLong(1, idFabricante);
+        statement.executeUpdate();
+        
+        System.out.println("Carros associados aos modelos do fabricante foram excluídos com sucesso!");
+        
+    } catch (SQLException ex) {
+        System.out.println("Erro ao excluir carros associados aos modelos: " + ex.getMessage());
+    }
+}
+
+
+
+
+
+
 }

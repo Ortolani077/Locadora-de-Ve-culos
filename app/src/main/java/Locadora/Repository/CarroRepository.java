@@ -157,28 +157,61 @@ public class CarroRepository {
         System.out.println("Erro ao editar o carro: " + ex.getMessage());
     }
 }
- public Long obterIdModeloPeloNome(String nomeModelo) throws SQLException {
+public Long obterIdModeloPeloNome(String nomeModelo) {
     Long idModelo = null;
     String query = "SELECT id FROM modelo WHERE nome = ?";
+    
     try (Connection connection = ConexaoBanco.obterConexao();
          PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setString(1, nomeModelo);
+        
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 idModelo = resultSet.getLong("id");
             }
         }
     } catch (SQLException ex) {
-        System.out.println("Erro ao buscar o ID do modelo pelo nome: " + ex.getMessage());
+        // Tratamento de exceção mais específico
+        System.err.println("Erro ao buscar o ID do modelo pelo nome: " + ex.getMessage());
     }
+    
     return idModelo;
 }
 
-
-
-
-
+    public List<Carro> listarPorFabricante(long idFabricante) {
+    List<Carro> carros = new ArrayList<>();
+    String query = "SELECT * FROM carro WHERE fabricante_id = ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setLong(1, idFabricante);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Carro carro = new Carro();
+                carro.setId(resultSet.getLong("id"));
+                // Defina outros atributos do carro, se necessário
+                carros.add(carro);
+            }
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao listar carros por fabricante: " + ex.getMessage());
+    }
+    return carros;
 }
 
+public void excluirCarro(Long id) {
+    String query = "DELETE FROM carro WHERE id = ?";
+    try (Connection connection = ConexaoBanco.obterConexao();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setLong(1, id);
+        int linhasAfetadas = statement.executeUpdate();
+        if (linhasAfetadas > 0) {
+            System.out.println("Carro excluído com sucesso!");
+        } else {
+            System.out.println("Nenhum carro foi excluído.");
+        }
+    } catch (SQLException ex) {
+        System.out.println("Erro ao excluir o carro: " + ex.getMessage());
+    }
+}
 
-
+}
